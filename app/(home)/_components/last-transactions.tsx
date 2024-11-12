@@ -42,14 +42,12 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
             className="flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-white bg-opacity-[3%] p-3">
+              <div className="rounded-lg bg-white bg-opacity-[3%] p-3 text-white">
                 <Image
-                  src={
-                    TRANSACTION_PAYMENT_METHOD_ICONS[transaction.paymentMethod]
-                  }
+                  src={`/${TRANSACTION_PAYMENT_METHOD_ICONS[transaction.paymentMethod]}`}
                   height={20}
                   width={20}
-                  alt="PIX"
+                  alt="ICONS"
                 />
               </div>
               <div>
