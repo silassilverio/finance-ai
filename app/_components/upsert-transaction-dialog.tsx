@@ -100,7 +100,7 @@ const UpsertTransactionDialog = ({
       setIsOpen(false);
       form.reset();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -111,7 +111,7 @@ const UpsertTransactionDialog = ({
       open={isOpen}
       onOpenChange={(open) => {
         setIsOpen(open);
-        if (open) {
+        if (!open) {
           form.reset();
         }
       }}
@@ -133,7 +133,7 @@ const UpsertTransactionDialog = ({
                 <FormItem>
                   <FormLabel>Nome</FormLabel>
                   <FormControl>
-                    <Input placeholder="DIgite o nome..." {...field} />
+                    <Input placeholder="Digite o nome..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -147,7 +147,7 @@ const UpsertTransactionDialog = ({
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
                     <MoneyInput
-                      placeholder="DIgite o valor..."
+                      placeholder="Digite o valor..."
                       value={field.value}
                       onValueChange={({ floatValue }) =>
                         field.onChange(floatValue)
