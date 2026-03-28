@@ -59,7 +59,9 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
               />
             </div>
           </div>
-          <LastTransactions lastTransactions={dashboard.lastTransactions} />
+          <div className="overflow-hidden">
+            <LastTransactions lastTransactions={dashboard.lastTransactions} />
+          </div>
         </div>
       </div>
     </>
