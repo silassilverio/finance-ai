@@ -19,25 +19,41 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
     );
   }
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-  //pegar as transações do mês recebido
+
+  const currentYear = new Date().getFullYear();
+  const monthIndex = Number(month) - 1;
+  const startDate = new Date(currentYear, monthIndex, 1);
+  const endDate = new Date(currentYear, monthIndex + 1, 1);
+
   const transactions = await db.transaction.findMany({
     where: {
+      userId,
       date: {
-        gte: new Date(`2024-${month}-01`),
-        lt: new Date(`2024-${month}-31`),
+        gte: startDate,
+        lt: endDate,
       },
     },
   });
-  //mandar as transações para a IA e pedir para ela gerar um relatório com insigths
-  const content = `Gere um relatório com insights sobre as minhas finanças, com dicas e orientações de como melhorar
-   minha vida financeira. As transações estão divididas por ponto e vírgula. A estrutura de cada uma é {DATA}-{TIPO}-
-   {VALOR}-{CATEGORIA}. São elas:
-   ${transactions
-     .map(
-       (transaction) =>
-         `${transaction.date.toLocaleDateString("pt-BR")}-R$${transaction.amount}-${transaction.type}-${transaction.category}`,
-     )
-     .join(";")}`;
+
+  const content = `Gere um relatório detalhado com insights sobre as minhas finanças do mês, com dicas e orientações de como melhorar minha vida financeira. Utilize os dados abaixo para análise.
+
+As transações estão separadas por ponto e vírgula, no formato: {NOME}-{TIPO}-{VALOR}-{CATEGORIA}-{MÉTODO DE PAGAMENTO}-{DATA}
+
+Transações:
+${transactions
+  .map(
+    (transaction) =>
+      `${transaction.name}-${transaction.type}-R$${transaction.amount}-${transaction.category}-${transaction.paymentMethod}-${transaction.date.toLocaleDateString("pt-BR")}`,
+  )
+  .join(";")}
+
+Por favor, inclua no relatório:
+1. Resumo geral das finanças do mês
+2. Principais categorias de gastos
+3. Pontos de atenção
+4. Dicas personalizadas de economia e melhorias
+5. Avaliação geral da saúde financeira no mês`;
+
   const completion = await groq.chat.completions.create({
     messages: [
       {
@@ -50,7 +66,7 @@ export const generateAiReport = async ({ month }: GenerateAiReportSchema) => {
         content,
       },
     ],
-    model: "llama3-8b-8192",
+    model: "llama-3.3-70b-versatile",
   });
   // Pegar o relatório gerado pela IA e retornar para o usuário
   return completion.choices[0].message.content;
