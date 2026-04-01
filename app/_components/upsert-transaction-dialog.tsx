@@ -85,7 +85,7 @@ const UpsertTransactionDialog = ({
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues ?? {
-      amount: 50,
+      amount: undefined,
       category: TransactionCategory.OTHER,
       date: new Date(),
       name: "",
@@ -150,7 +150,7 @@ const UpsertTransactionDialog = ({
                       placeholder="Digite o valor..."
                       value={field.value}
                       onValueChange={({ floatValue }) =>
-                        field.onChange(floatValue)
+                        field.onChange(floatValue ?? "")
                       }
                       onBlur={field.onBlur}
                       disabled={field.disabled}
