@@ -5,17 +5,21 @@ import {
   TransactionsPercentagePerType,
 } from "./types";
 import { auth } from "@clerk/nextjs/server";
+import { endOfMonth, startOfMonth } from "date-fns";
 
 export const getDashboard = async (month: string) => {
   const { userId } = auth();
   if (!userId) {
     throw new Error("Unauthorized");
   }
+  const monthStart = startOfMonth(
+    new Date(`${new Date().getFullYear()}-${month}-01`),
+  );
   const where = {
     userId,
     date: {
-      gte: new Date(`${new Date().getFullYear()}-${month}-01`),
-      lt: new Date(`${new Date().getFullYear()}-${month}-31`),
+      gte: monthStart,
+      lte: endOfMonth(monthStart),
     },
   };
   const depositsTotal = Number(
